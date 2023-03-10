@@ -8,6 +8,6 @@ module gre.lab1 {
   opens gre.lab1.gui to javafx.fxml;
   exports gre.lab1.gui.impl;
   opens gre.lab1.gui.impl to javafx.fxml;
-  exports gre.lab1.groupeX;
-  opens gre.lab1.groupeX to javafx.fxml;
+  exports gre.lab1.groupe16;
+  opens gre.lab1.groupe16 to javafx.fxml;
 }
