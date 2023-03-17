@@ -2,173 +2,140 @@ package gre.lab1.groupe16;
 
 import gre.lab1.graph.GridGraph2D;
 
+import java.text.DecimalFormat;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 
 
 // TODO: javadoc
 public final class GridGraph implements GridGraph2D {
-  /** Largeur de la grille. */
-  private final int width ;
+    public final int DEFAULT_EDGE_ALLOCATION = 4;
 
-  /** Hauteur de la grille. */
-  private final int height ;
+    /**
+     * Largeur de la grille.
+     */
+    private final int width;
 
-  /** Matrice d'ajacence du graphe */
-  private ArrayList<ArrayList<Integer>> adjacencyLists;
+    /**
+     * Hauteur de la grille.
+     */
+    private final int height;
 
+    /**
+     * Liste d'adjacence du graphe
+     */
+    private final ArrayList<ArrayList<Integer>> adjacencyLists;
 
-  /**
-   * Construit une grille carrée.
-   * @param side Côté de la grille.
-   */
-  public GridGraph(int side) {
-    this(side, side);
-  }
-
-  /**
-   * Construit une grille rectangulaire.
-   * @param width Largeur de la grille.
-   * @param height Hauteur de la grille.
-   * @throws IllegalArgumentException si {@code width} ou {@code length} sont négatifs ou nuls.
-   */
-  public GridGraph(int width, int height) {
-    if (width <= 0 || height <= 0)
-      throw new IllegalArgumentException("Width: " + width + " and height: " + height + " must be positive");
-
-    this.width = width;
-    this.height = height;
-    adjacencyLists = new ArrayList<>();
-
-
-
-    //-------- remplisage de la matrice d'adjacence --------
-    for (int i = 1; i < (width  * height) + 1; i++ ){
-      adjacencyLists.add( new ArrayList<Integer>());
-      if(i == 1){
-
-       adjacencyLists.get(i - 1).add(i+1);
-       adjacencyLists.get(i - 1).add(i+width);
-
-      }else if(i == width){
-
-        adjacencyLists.get(i - 1).add(i -1);
-        adjacencyLists.get(i - 1).add(i - width);
-
-      }else if(i == width*height){
-
-        adjacencyLists.get(i - 1).add(i - 1);
-        adjacencyLists.get(i - 1).add(i - width);
-
-      }else if(i == (width*(height - 1) + 1)){
-
-        adjacencyLists.get(i - 1).add(i+1);
-        adjacencyLists.get(i - 1).add(i - width);
-
-      }else if(i < width){
-
-        adjacencyLists.get(i - 1).add(i-1);
-        adjacencyLists.get(i - 1).add(i+1);
-        adjacencyLists.get(i - 1).add(i+width);
-
-      }else if(i % width == 0){
-
-        adjacencyLists.get(i - 1).add(i-width);
-        adjacencyLists.get(i - 1).add(i+width);
-        adjacencyLists.get(i - 1).add(i -1);
-
-      }else if(i % width == 1){
-
-        adjacencyLists.get(i - 1).add(i-width);
-        adjacencyLists.get(i - 1).add(i+width);
-        adjacencyLists.get(i - 1).add(i + 1);
-
-      }else  if(i > (width*(height - 1))){
-
-        adjacencyLists.get(i - 1).add(i-1);
-        adjacencyLists.get(i - 1).add(i+1);
-        adjacencyLists.get(i - 1).add(i - width);
-
-      }else {
-
-        adjacencyLists.get(i - 1).add(i-1);
-        adjacencyLists.get(i - 1).add(i+1);
-        adjacencyLists.get(i - 1).add(i - width);
-        adjacencyLists.get(i - 1).add(i+width);
-
-      }
+    /**
+     * Construit une grille carrée.
+     *
+     * @param side Côté de la grille.
+     */
+    public GridGraph(int side) {
+        this(side, side);
     }
 
-  }
+    /**
+     * Construit une grille rectangulaire.
+     *
+     * @param width  Largeur de la grille.
+     * @param height Hauteur de la grille.
+     * @throws IllegalArgumentException si {@code width} ou {@code length} sont négatifs ou nuls.
+     */
+    public GridGraph(int width, int height) {
+        if (width <= 0 || height <= 0)
+            throw new IllegalArgumentException("Width: " + width + " and height: " + height + " must be positive");
 
+        this.width = width;
+        this.height = height;
 
-  @Override
-  public List<Integer> neighbors(int v) {
-   return adjacencyLists.get( v -1 );
-  }
+        adjacencyLists = new ArrayList<>(nbVertices());
 
-  @Override
-  public boolean areAdjacent(int u, int v) {
-    return adjacencyLists.get(u-1).contains(v);
-  }
-
-  @Override
-  public void addEdge(int u, int v) {
-    // TODO: A implémenter
-  }
-
-  @Override
-  public void removeEdge(int u, int v) {
-    // TODO: A implémenter
-  }
-
-  @Override
-  public int nbVertices() {
-    // TODO: A implémenter
-    return 0;
-  }
-
-  @Override
-  public boolean vertexExists(int v) {
-    // TODO: A implémenter
-    return false;
-  }
-
-  @Override
-  public int width() {
-    return width;
-  }
-
-  @Override
-  public int height() {
-    return height;
-  }
-
-  /**
-   * Lie chaque sommet du graphe donné à tous ses voisins dans la grille.
-   * @param graph Un graphe.
-   */
-  public static void bindAll(GridGraph graph) {
-    // TODO: A implémenter
-  }
-
-  public void printGraph(){
-    for(int i = 0; i < width*height; i++){
-      System.out.print(i+1+" :");
-      for(int j = 0; j < adjacencyLists.get(i).size();j++){
-        System.out.print(" " + adjacencyLists.get(i).get(j) );
-      }
-      System.out.print("\n");
+        for (int i = 0; i < nbVertices(); ++i) {
+            adjacencyLists.add(new ArrayList<>(DEFAULT_EDGE_ALLOCATION));
+        }
     }
-  }
 
-  public static void main(String[] args) {
-    GridGraph g = new GridGraph(4,5);
-    g.printGraph();
+    @Override
+    public List<Integer> neighbors(int v) {
+        // TODO
+    }
 
-    System.out.println(g.areAdjacent(6,5));
-    System.out.println(g.areAdjacent(14,5));
-  }
+    @Override
+    public boolean areAdjacent(int u, int v) {
+        return false;
+    }
+
+    @Override
+    public void addEdge(int u, int v) {
+        this.adjacencyLists.get(u).add(v);
+    }
+
+    @Override
+    public void removeEdge(int u, int v) {
+        // TODO: A implémenter
+    }
+
+    @Override
+    public int nbVertices() {
+        return width * height;
+    }
+
+    @Override
+    public boolean vertexExists(int v) {
+        return v >= 0 && v < width * height;
+    }
+
+    @Override
+    public int width() {
+        return width;
+    }
+
+    @Override
+    public int height() {
+        return height;
+    }
+
+    /**
+     * Lie chaque sommet du graphe donné à tous ses voisins dans la grille.
+     *
+     * @param graph Un graphe.
+     */
+    public static void bindAll(GridGraph graph) {
+        for (int i = 0; i < graph.nbVertices(); ++i) {
+            // Liaison au sommet nord
+            if (i - graph.width() >= 0)
+                graph.addEdge(i, i + graph.width());
+
+            // Liaison au sommet est
+            if (i % graph.width() < graph.width - 1)
+                graph.addEdge(i, i + 1);
+
+            // Liaison au sommet sud
+            if (i + graph.width() < graph.nbVertices())
+                graph.addEdge(i, i + graph.width());
+
+            // Liaison au sommet ouest
+            if (i % graph.width > 0)
+                graph.addEdge(i, i - 1);
+        }
+    }
+
+    public void printGraph() {
+        for (int i = 0; i < width * height; i++) {
+            System.out.print(i + 1 + " :");
+            for (int j = 0; j < adjacencyLists.get(i).size(); j++) {
+                System.out.print(" " + adjacencyLists.get(i).get(j));
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main() {
+        GridGraph g = new GridGraph(5, 4);
+        GridGraph.bindAll(g);
+
+        g.printGraph();
+    }
 }
-
-
