@@ -43,58 +43,58 @@ public final class GridGraph implements GridGraph2D {
 
 
     //-------- remplisage de la matrice d'adjacence --------
-    for (int i = 1; i < (width  * height) + 1; i++ ){
+    for (int i = 0; i < width  * height ; i++ ){
       adjacencyLists.add( new ArrayList<Integer>());
-      if(i == 1){
+      if(i == 0){
 
-       adjacencyLists.get(i - 1).add(i+1);
-       adjacencyLists.get(i - 1).add(i+width);
+       adjacencyLists.get(i).add(i+1);
+       adjacencyLists.get(i).add(i+width);
 
-      }else if(i == width){
+      }else if(i == (width - 1) ){
 
-        adjacencyLists.get(i - 1).add(i -1);
-        adjacencyLists.get(i - 1).add(i - width);
+        adjacencyLists.get(i).add(i -1);
+        adjacencyLists.get(i).add(i + width);
 
-      }else if(i == width*height){
+      }else if(i == ((width*height)-1)){
 
-        adjacencyLists.get(i - 1).add(i - 1);
-        adjacencyLists.get(i - 1).add(i - width);
+        adjacencyLists.get(i).add(i - 1);
+        adjacencyLists.get(i).add(i - width);
 
-      }else if(i == (width*(height - 1) + 1)){
+      }else if(i == (width*(height - 1))){
 
-        adjacencyLists.get(i - 1).add(i+1);
-        adjacencyLists.get(i - 1).add(i - width);
+        adjacencyLists.get(i).add(i+1);
+        adjacencyLists.get(i).add(i - width);
 
       }else if(i < width){
 
-        adjacencyLists.get(i - 1).add(i-1);
-        adjacencyLists.get(i - 1).add(i+1);
-        adjacencyLists.get(i - 1).add(i+width);
+        adjacencyLists.get(i).add(i-1);
+        adjacencyLists.get(i).add(i+1);
+        adjacencyLists.get(i).add(i+width);
+
+      }else if(i % width == width - 1){
+
+        adjacencyLists.get(i).add(i-width);
+        adjacencyLists.get(i).add(i+width);
+        adjacencyLists.get(i).add(i -1);
 
       }else if(i % width == 0){
 
-        adjacencyLists.get(i - 1).add(i-width);
-        adjacencyLists.get(i - 1).add(i+width);
-        adjacencyLists.get(i - 1).add(i -1);
-
-      }else if(i % width == 1){
-
-        adjacencyLists.get(i - 1).add(i-width);
-        adjacencyLists.get(i - 1).add(i+width);
-        adjacencyLists.get(i - 1).add(i + 1);
+        adjacencyLists.get(i).add(i-width);
+        adjacencyLists.get(i).add(i+width);
+        adjacencyLists.get(i).add(i + 1);
 
       }else  if(i > (width*(height - 1))){
 
-        adjacencyLists.get(i - 1).add(i-1);
-        adjacencyLists.get(i - 1).add(i+1);
-        adjacencyLists.get(i - 1).add(i - width);
+        adjacencyLists.get(i).add(i-1);
+        adjacencyLists.get(i).add(i+1);
+        adjacencyLists.get(i).add(i - width);
 
       }else {
 
-        adjacencyLists.get(i - 1).add(i-1);
-        adjacencyLists.get(i - 1).add(i+1);
-        adjacencyLists.get(i - 1).add(i - width);
-        adjacencyLists.get(i - 1).add(i+width);
+        adjacencyLists.get(i).add(i-1);
+        adjacencyLists.get(i).add(i+1);
+        adjacencyLists.get(i).add(i - width);
+        adjacencyLists.get(i).add(i+width);
 
       }
     }
@@ -109,7 +109,7 @@ public final class GridGraph implements GridGraph2D {
 
   @Override
   public boolean areAdjacent(int u, int v) {
-    return adjacencyLists.get(u-1).contains(v);
+    return adjacencyLists.get(u).contains(v);
   }
 
   @Override
@@ -124,14 +124,12 @@ public final class GridGraph implements GridGraph2D {
 
   @Override
   public int nbVertices() {
-    // TODO: A implémenter
-    return 0;
+    return width*height;
   }
 
   @Override
   public boolean vertexExists(int v) {
-    // TODO: A implémenter
-    return false;
+    return (v > 0 && v <= height*width );
   }
 
   @Override
@@ -154,7 +152,7 @@ public final class GridGraph implements GridGraph2D {
 
   public void printGraph(){
     for(int i = 0; i < width*height; i++){
-      System.out.print(i+1+" :");
+      System.out.print(i +" :");
       for(int j = 0; j < adjacencyLists.get(i).size();j++){
         System.out.print(" " + adjacencyLists.get(i).get(j) );
       }
