@@ -7,7 +7,12 @@ import java.util.ArrayList;
 
 
 public final class GridGraph implements GridGraph2D {
-  public final int DEFAULT_EDGE_ALLOCATION = 4;
+
+  /**
+   * Allocation de la capacité d'une liste d'adjacence par défaut.
+   * Un sommet possède 4 voisins dans la majorité des cas.
+   */
+  private static final int DEFAULT_EDGE_ALLOCATION = 4;
 
   /**
    * Largeur de la grille.
@@ -56,7 +61,7 @@ public final class GridGraph implements GridGraph2D {
 
   @Override
   public List<Integer> neighbors(int v) {
-    return (List<Integer>) this.adjacencyLists.get(v).clone();
+    return new ArrayList<>(adjacencyLists.get(v));
   }
 
   @Override
@@ -66,12 +71,19 @@ public final class GridGraph implements GridGraph2D {
 
   @Override
   public void addEdge(int u, int v) {
-    adjacencyLists.get(u).add(v);
+    if (!areAdjacent(u, v)) {
+      adjacencyLists.get(u).add(v);
+    }
+
+    if (!areAdjacent(v, u)) {
+      adjacencyLists.get(v).add(u);
+    }
   }
 
   @Override
   public void removeEdge(int u, int v) {
     adjacencyLists.get(u).removeIf(i -> i == v);
+    adjacencyLists.get(v).removeIf(i -> i == u);
   }
 
   @Override
@@ -100,32 +112,26 @@ public final class GridGraph implements GridGraph2D {
    * @param graph Un graphe.
    */
   public static void bindAll(GridGraph graph) {
-    for (int i = 0; i < graph.nbVertices(); ++i) {
+    for (int u = 0; u < graph.nbVertices(); ++u) {
       // Liaison au sommet nord
-      if (i - graph.width >= 0)
-        graph.addEdge(i, i - graph.width);
-
-      // Liaison au sommet est
-      if (i % graph.width < graph.width - 1)
-        graph.addEdge(i, i + 1);
-
-      // Liaison au sommet sud
-      if (i + graph.width < graph.nbVertices())
-        graph.addEdge(i, i + graph.width);
-
-      // Liaison au sommet ouest
-      if (i % graph.width > 0)
-        graph.addEdge(i, i - 1);
-    }
-  }
-
-  public void printGraph() {
-    for (int i = 0; i < nbVertices(); i++) {
-      System.out.print(i + " :");
-      for (int j : adjacencyLists.get(i)) {
-        System.out.print(" " + j);
+      if (graph.vertexExists(u - graph.width())) {
+        graph.addEdge(u, u - graph.width());
       }
-      System.out.println();
+
+      // Au sommet sud
+      if (graph.vertexExists(u + graph.width())) {
+        graph.addEdge(u, u + graph.width());
+      }
+
+      // Au sommet est
+      if (u % graph.width() + 1 < graph.width()) {
+        graph.addEdge(u, u + 1);
+      }
+
+      // Au sommet ouest
+      if (u % graph.width - 1 >= 0) {
+        graph.addEdge(u, u - 1);
+      }
     }
   }
 }
