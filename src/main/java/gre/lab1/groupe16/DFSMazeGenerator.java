@@ -3,8 +3,10 @@ package gre.lab1.groupe16;
 import gre.lab1.graph.Graph;
 import gre.lab1.gui.MazeGenerator;
 import gre.lab1.gui.MazeBuilder;
+import gre.lab1.gui.Progression;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 // TODO: javadoc
 public final class DFSMazeGenerator implements MazeGenerator {
@@ -19,7 +21,26 @@ public final class DFSMazeGenerator implements MazeGenerator {
   private int[] start;
 
   private void dfs(MazeBuilder builder, int u) {
+    start[u] = ++date;
 
+    // Début du traitement
+    builder.progressions().setLabel(u, Progression.PROCESSING);
+
+    List<Integer> neighbors = builder.topology().neighbors(u);
+    Collections.shuffle(neighbors);
+
+    for (int v : neighbors) {
+      if (start[v] == 0) {
+        // L'arête entre u et v fait partie de l'arborescence,
+        // on enlève donc le mur correspondant.
+        builder.removeWall(u, v);
+        dfs(builder, v);
+      }
+    }
+    ++date;
+
+    // Fin du traitement
+    builder.progressions().setLabel(u, Progression.PROCESSED);
   }
 
   private void dfs(MazeBuilder builder) {
@@ -35,13 +56,6 @@ public final class DFSMazeGenerator implements MazeGenerator {
 
   @Override
   public void generate(MazeBuilder builder, int from) {
-    ((GridGraph) builder.topology()).printGraph();
-    // TODO: A implémenter
-    //  NOTES D'IMPLÉMENTATION :
-    //  Afin d'obtenir l'affichage adéquat, indiquer la progression (en tant que label du sommet traité) :
-    //  - PROCESSING, en pré-traitement;
-    //  - PROCESSED, en post-traitement.
-    //  Le labyrinthe n'a que des murs au début de la construction, il faut donc créer les passages en
-    //  supprimant des murs.
+    dfs(builder);
   }
 }

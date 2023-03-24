@@ -56,7 +56,7 @@ public final class GridGraph implements GridGraph2D {
 
   @Override
   public List<Integer> neighbors(int v) {
-    return this.adjacencyLists.get(v);
+    return (List<Integer>) this.adjacencyLists.get(v).clone();
   }
 
   @Override
@@ -102,28 +102,28 @@ public final class GridGraph implements GridGraph2D {
   public static void bindAll(GridGraph graph) {
     for (int i = 0; i < graph.nbVertices(); ++i) {
       // Liaison au sommet nord
-      if (i % graph.height > 0)
-        graph.addEdge(i, i - 1);
+      if (i - graph.width >= 0)
+        graph.addEdge(i, i - graph.width);
 
       // Liaison au sommet est
-      if (i + graph.height < graph.nbVertices())
-        graph.addEdge(i, i + graph.height);
-
-      // Liaison au sommet sud
-      if (i % graph.height < graph.height - 1)
+      if (i % graph.width < graph.width - 1)
         graph.addEdge(i, i + 1);
 
+      // Liaison au sommet sud
+      if (i + graph.width < graph.nbVertices())
+        graph.addEdge(i, i + graph.width);
+
       // Liaison au sommet ouest
-      if (i - graph.height >= 0)
-        graph.addEdge(i, i - graph.height);
+      if (i % graph.width > 0)
+        graph.addEdge(i, i - 1);
     }
   }
 
   public void printGraph() {
-    for (int i = 0; i < width * height; i++) {
+    for (int i = 0; i < nbVertices(); i++) {
       System.out.print(i + " :");
-      for (int j = 0; j < adjacencyLists.get(i).size(); j++) {
-        System.out.print(" " + adjacencyLists.get(i).get(j));
+      for (int j : adjacencyLists.get(i)) {
+        System.out.print(" " + j);
       }
       System.out.println();
     }
