@@ -2,13 +2,10 @@ package gre.lab1.groupe16;
 
 import gre.lab1.graph.GridGraph2D;
 
-import java.text.DecimalFormat;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 
 
-// TODO: javadoc
 public final class GridGraph implements GridGraph2D {
     public final int DEFAULT_EDGE_ALLOCATION = 4;
 
@@ -23,7 +20,7 @@ public final class GridGraph implements GridGraph2D {
     private final int height;
 
     /**
-     * Liste d'adjacence du graphe
+     * Listes d'adjacence du graphe
      */
     private final ArrayList<ArrayList<Integer>> adjacencyLists;
 
