@@ -59,22 +59,22 @@ public final class GridGraph implements GridGraph2D {
 
     @Override
     public List<Integer> neighbors(int v) {
-        // TODO
+        return this.adjacencyLists.get(v);
     }
 
     @Override
     public boolean areAdjacent(int u, int v) {
-        return false;
+        return adjacencyLists.get(u).contains(v);
     }
 
     @Override
     public void addEdge(int u, int v) {
-        this.adjacencyLists.get(u).add(v);
+        adjacencyLists.get(u).add(v);
     }
 
     @Override
     public void removeEdge(int u, int v) {
-        // TODO: A implémenter
+        adjacencyLists.get(u).removeIf(i -> i == v);
     }
 
     @Override
@@ -84,7 +84,7 @@ public final class GridGraph implements GridGraph2D {
 
     @Override
     public boolean vertexExists(int v) {
-        return v >= 0 && v < width * height;
+        return v >= 0 && v < nbVertices();
     }
 
     @Override
@@ -105,37 +105,30 @@ public final class GridGraph implements GridGraph2D {
     public static void bindAll(GridGraph graph) {
         for (int i = 0; i < graph.nbVertices(); ++i) {
             // Liaison au sommet nord
-            if (i - graph.width() >= 0)
-                graph.addEdge(i, i + graph.width());
+            if (i % graph.height > 0)
+                graph.addEdge(i, i - 1);
 
             // Liaison au sommet est
-            if (i % graph.width() < graph.width - 1)
-                graph.addEdge(i, i + 1);
+            if (i + graph.height < graph.nbVertices())
+                graph.addEdge(i, i + graph.height);
 
             // Liaison au sommet sud
-            if (i + graph.width() < graph.nbVertices())
-                graph.addEdge(i, i + graph.width());
+            if (i % graph.height < graph.height - 1)
+                graph.addEdge(i, i + 1);
 
             // Liaison au sommet ouest
-            if (i % graph.width > 0)
-                graph.addEdge(i, i - 1);
+            if (i - graph.height >= 0)
+                graph.addEdge(i, i - graph.height);
         }
     }
 
     public void printGraph() {
         for (int i = 0; i < width * height; i++) {
-            System.out.print(i + 1 + " :");
+            System.out.print(i + " :");
             for (int j = 0; j < adjacencyLists.get(i).size(); j++) {
                 System.out.print(" " + adjacencyLists.get(i).get(j));
             }
             System.out.println();
         }
-    }
-
-    public static void main() {
-        GridGraph g = new GridGraph(5, 4);
-        GridGraph.bindAll(g);
-
-        g.printGraph();
     }
 }
