@@ -5,7 +5,6 @@ import gre.lab1.graph.GridGraph2D;
 import java.util.List;
 import java.util.ArrayList;
 
-
 public final class GridGraph implements GridGraph2D {
 
   /**
@@ -61,27 +60,31 @@ public final class GridGraph implements GridGraph2D {
 
   @Override
   public List<Integer> neighbors(int v) {
+    if (!vertexExists(v))
+      throw new IllegalArgumentException("Vertex does not exist");
+
     return new ArrayList<>(adjacencyLists.get(v));
   }
 
   @Override
   public boolean areAdjacent(int u, int v) {
-    return adjacencyLists.get(u).contains(v);
+    if (!vertexExists(u) || !vertexExists(v))
+      throw new IllegalArgumentException("At least one of the vertices does not exist");
+
+    return adjacencyLists.get(u).contains(v) && adjacencyLists.get(v).contains(u);
   }
 
   @Override
   public void addEdge(int u, int v) {
-    if (!areAdjacent(u, v)) {
-      adjacencyLists.get(u).add(v);
-    }
-
-    if (!areAdjacent(v, u)) {
-      adjacencyLists.get(v).add(u);
-    }
+    adjacencyLists.get(u).add(v);
+    adjacencyLists.get(v).add(u);
   }
 
   @Override
   public void removeEdge(int u, int v) {
+    if (!areAdjacent(u, v))
+      throw new IllegalArgumentException("Vertices are not adjacent");
+
     adjacencyLists.get(u).removeIf(i -> i == v);
     adjacencyLists.get(v).removeIf(i -> i == u);
   }
@@ -113,22 +116,15 @@ public final class GridGraph implements GridGraph2D {
    */
   public static void bindAll(GridGraph graph) {
     for (int u = 0; u < graph.nbVertices(); ++u) {
-      // Liaison au sommet nord
+      // Les liaisons aux sommets Sud et Est correspondent aux liaisons
+      // Nord et Ouest de ces derniers.
+
+      // Liaison au sommet Nord
       if (graph.vertexExists(u - graph.width())) {
         graph.addEdge(u, u - graph.width());
       }
 
-      // Au sommet sud
-      if (graph.vertexExists(u + graph.width())) {
-        graph.addEdge(u, u + graph.width());
-      }
-
-      // Au sommet est
-      if (u % graph.width() + 1 < graph.width()) {
-        graph.addEdge(u, u + 1);
-      }
-
-      // Au sommet ouest
+      // Au sommet Ouest
       if (u % graph.width - 1 >= 0) {
         graph.addEdge(u, u - 1);
       }

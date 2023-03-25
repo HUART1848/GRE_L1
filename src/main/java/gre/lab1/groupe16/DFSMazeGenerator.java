@@ -9,10 +9,17 @@ import java.util.List;
 
 public final class DFSMazeGenerator implements MazeGenerator {
 
+  /**
+   * <p>Génère un nouveau labyrinthe à l'aide de l'algorithme DFS.</p>
+   * @param builder Un builder à qui déléguer les modifications de la structure de données.
+   * @param from Sommet de départ, si l'algorithme utilisé en nécessite un.
+   */
   @Override
   public void generate(MazeBuilder builder, int from) {
     builder.progressions().setLabel(from, Progression.PROCESSING);
 
+    // Pour parcourir les sommets adjacents dans un ordre aléatoire,
+    // on mélange la liste des voisins.
     List<Integer> neighbors = builder.topology().neighbors(from);
     Collections.shuffle(neighbors);
 
