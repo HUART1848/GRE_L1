@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public final class ObservableMaze
-      implements GridGraph2D, VertexLabelling<Progression>, ObservableGraph, MazeBuilder {
+        implements GridGraph2D, VertexLabelling<Progression>, ObservableGraph, MazeBuilder {
   private final List<GraphObserver> subscribers = new ArrayList<>();
   private final Graph topology;
   private final GridGraph2D delegate;
